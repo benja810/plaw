@@ -28,4 +28,27 @@ class Lemmy:
 
     def getCommunity(self, name):
         url = self.instance + "/api/v3/community"
-        return self._req.request(HttpType.GET, url, {"name": name})
+        res = self._req.request(HttpType.GET, url, {"name": name})
+
+        self.community = res["community_view"]["community"]
+        return self.community
+
+    def listPosts(self, sort=None):
+        url = self.instance + "/api/v3/post/list"
+        res = self._req.request(
+            HttpType.GET,
+            url,
+            {"sort": sort or "New", "community_id": self.community["id"]},
+        )
+
+        return res["posts"]
+
+    def getPost(self, id):
+        url = self.instance + "/api/v3/post"
+        res = self._req.request(
+            HttpType.GET,
+            url,
+            {"id": id},
+        )
+
+        return res["post_view"]
