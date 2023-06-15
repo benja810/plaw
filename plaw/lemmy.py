@@ -52,3 +52,36 @@ class Lemmy:
         )
 
         return res["post_view"]
+
+    def submitPost(self, title=None, body=None, url=None):
+        api_url = self.instance + "/api/v3/post"
+        res = self._req.request(
+            HttpType.POST,
+            api_url,
+            {
+                "auth": self.auth_token,
+                "community_id": self.community["id"],
+                "name": title,
+                "body": body,
+                "url": url,
+            },
+        )
+
+        return res["post_view"]
+
+    def editPost(self, post_id, title=None, body=None, url=None):
+        api_url = self.instance + "/api/v3/post"
+        data = {
+            "auth": self.auth_token,
+            "post_id": post_id,
+        }
+        if title:
+            data["name"] = title
+        if body:
+            data["body"] = body
+        if url:
+            data["url"] = url
+
+        res = self._req.request(HttpType.PUT, api_url, data)
+
+        return res["post_view"]
